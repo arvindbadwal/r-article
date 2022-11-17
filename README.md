@@ -60,7 +60,23 @@ If User Model has different namespace other than default laravel, change the Use
 
 In `config/article.php` set/change `models.user`
 
-## Testing
+## Dispatch Event 
+
+Follow Event is dispatch on different event
+
+```php
+    ArticleFeedbackSaved
+    UserArticleActionSaved
+    UserReadHistorySaved
+```
+
+## Jobs
+
+```php
+    AddArticleMetaToUserReadHistory
+```
+
+## Testing (WIP)
 
 ```bash
 composer test
