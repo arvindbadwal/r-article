@@ -1,0 +1,60 @@
+{
+    "name": "cactus/article",
+    "description": "Article Service For History and Feedback",
+    "keywords": [
+        "cactus",
+        "article"
+    ],
+    "homepage": "https://github.com/cactus/article",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Arvindkumar Badwal",
+            "email": "arvind.badwal@cactusglobal.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.2|^7.4|^8.0",
+        "illuminate/auth": "^6.0|^7.0|^8.0|^9.0",
+        "illuminate/container": "^6.0|^7.0|^8.0|^9.0",
+        "illuminate/database": "^6.0|^7.0|^8.0|^9.0",
+        "illuminate/support": "^6.0|^7.0|^8.0|^9.0"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.3",
+        "orchestra/testbench": "^5.0|^6.0",
+        "phpunit/phpunit": "^8.0|^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cactus\\Article\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cactus\\Article\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Cactus\\Article\\ArticleServiceProvider"
+            ],
+            "aliases": {
+                "Article": "Cactus\\Article\\Facades\\ArticleFacade",
+                "ArticleFeedback": "Cactus\\Article\\Facades\\ArticleFeedbackFacade",
+                "ArticleHistory": "Cactus\\Article\\Facades\\ArticleHistoryFacade"
+            }
+        }
+    }
+}
