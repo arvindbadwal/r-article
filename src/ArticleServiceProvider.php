@@ -42,9 +42,9 @@ class ArticleServiceProvider extends ServiceProvider
             ], 'config');
 
             $this->publishes([
-                __DIR__.'/../database/migrations/create_article_feedback.php.stub' => $this->getMigrationFileName('create_article_feedback.php'),
-                __DIR__.'/../database/migrations/create_user_articles_actions.php.stub' => $this->getMigrationFileName('create_user_articles_actions.php'),
-                __DIR__.'/../database/migrations/create_user_read_histories.php.stub' => $this->getMigrationFileName('create_user_read_histories.php'),
+                __DIR__.'/../database/migrations/create_table_article_feedback.php.stub' => $this->getMigrationFileName('create_table_article_feedback.php'),
+                __DIR__.'/../database/migrations/create_table_user_articles_actions.php.stub' => $this->getMigrationFileName('create_table_user_articles_actions.php'),
+                __DIR__.'/../database/migrations/create_table_user_read_histories.php.stub' => $this->getMigrationFileName('create_table_user_read_histories.php'),
             ], 'migrations');
         }
     }
