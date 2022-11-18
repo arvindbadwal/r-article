@@ -24,6 +24,13 @@ class BaseEloquentRepository
             ->update($attributes);
     }
 
+    public function findWhere($cols = [])
+    {
+        return $this->model
+            ->where($cols)
+            ->first();
+    }
+
     public function findByUserIdAndArticleIn($userId, $articleIds, $version = 'new')
     {
         if($version == 'new') {
