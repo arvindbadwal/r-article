@@ -41,13 +41,15 @@ class ArticleFeedbackControllerTest extends TestCase
                         'message' => 'Article feedback saved successfully'
                     ])));
             })
-        );
-
-        $response = $this->postJson(config('article.route.prefix').'/articles/sdasda234234/like');
-
-        var_dump($response->json());
-
-        $response->assertOk();*/
+        );*/
+//        $this->withoutMiddleware();
+//
+//        $response = $this->postJson(url(config('article.route.prefix').'/articles/sdasda234234/like'));
+//
+//        var_dump($response->json());
+//        var_dump(url(config('article.route.prefix').'/articles/sdasda234234/like'));
+//
+//        $response->assertOk();
 
         $this->assertNull(null);
     }

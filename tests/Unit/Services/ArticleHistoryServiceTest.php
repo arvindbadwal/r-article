@@ -6,7 +6,6 @@ use Cactus\Article\ArticleHistoryService;
 use Cactus\Article\ArticleServiceProvider;
 use Cactus\Article\Repositories\Eloquent\UserReadHistoryRepository;
 use Cactus\Article\Repositories\UserReadHistoryInterface;
-use Mockery\MockInterface;
 use Orchestra\Testbench\TestCase;
 
 class ArticleHistoryServiceTest extends TestCase
@@ -50,26 +49,20 @@ class ArticleHistoryServiceTest extends TestCase
      */
     public function it_performs_mark_article_read()
     {
-        // NOTE :: Not Working Currently
+        $userReadHistoryRepo = $this->mock(UserReadHistoryRepository::class);
+        $userReadHistoryRepo->shouldReceive('updateOrCreateRead')->andReturn(true);
+        $this->app->instance(UserReadHistoryInterface::class, $userReadHistoryRepo);
 
-        /*$projectController = resolve(ArticleHistoryService::class);
+        $articleHistoryService = resolve(ArticleHistoryService::class);
 
-        $this->app->instance(UserReadHistoryRepository::class,
-            \Mockery::mock(UserReadHistoryRepository::class, function (MockInterface $mock) {
-                $mock->shouldNotReceive('updateOrCreateRead')
-                    ->once()
-                    ->andReturn('true');
-            })
-        );
-
-        $result = $projectController->markArticleRead(
+        $result = $articleHistoryService->markArticleRead(
             [
                 'user_id' => 2,
                 'article_id' => '11f96d5d7ada37bb9419de81d943ad7f',
                 'read_via' => null
             ]
-        );*/
+        );
 
-        $this->assertTrue(true);
+        $this->assertTrue($result);
     }
 }
