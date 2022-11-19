@@ -6,11 +6,17 @@ use Cactus\Article\ArticleFeedbackService;
 use Cactus\Article\ArticleServiceProvider;
 use Cactus\Article\Repositories\ArticleFeedbackInterface;
 use Cactus\Article\Repositories\Eloquent\ArticleFeedbackRepository;
+use Cactus\Article\Repositories\Eloquent\UserArticleActionRepository;
+use Cactus\Article\Repositories\UserArticleActionInterface;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Validation\ValidationException;
 use Orchestra\Testbench\TestCase;
 
-class ArticleFeedbackServiceTest extends TestCase
+class ArticleFeedbackServiceTest111 extends TestCase
 {
+    use WithFaker, RefreshDatabase;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -54,13 +60,18 @@ class ArticleFeedbackServiceTest extends TestCase
         $articleFeedbackRepo->shouldReceive('updateOrCreateFeedback')->andReturn(true);
         $this->app->instance(ArticleFeedbackInterface::class, $articleFeedbackRepo);
 
+        $userReadHistoryRepo = $this->mock(UserArticleActionRepository::class);
+        $userReadHistoryRepo->shouldReceive('updateOrCreateAction')->andReturn(true);
+        $this->app->instance(UserArticleActionInterface::class, $userReadHistoryRepo);
+
+
         $articleFeedbackService = resolve(ArticleFeedbackService::class);
 
         $result = $articleFeedbackService->saveFeedback(
             [
-                'user_id' => 2,
-                'article_id' => '11f96d5d7ada37bb9419de81d943ad7f',
-                'liked' => true,
+                'user_id' => $this->faker->numberBetween(1, 9),
+                'article_id' =>  $this->faker->md5(),
+                'liked' => $this->faker->boolean(),
                 'reason' => null
             ]
         );
@@ -74,13 +85,18 @@ class ArticleFeedbackServiceTest extends TestCase
         $articleFeedbackRepo->shouldReceive('updateOrCreateFeedback')->andReturn(true);
         $this->app->instance(ArticleFeedbackInterface::class, $articleFeedbackRepo);
 
+        $userReadHistoryRepo = $this->mock(UserArticleActionRepository::class);
+        $userReadHistoryRepo->shouldReceive('updateOrCreateAction')->andReturn(true);
+        $this->app->instance(UserArticleActionInterface::class, $userReadHistoryRepo);
+
+
         $articleFeedbackService = resolve(ArticleFeedbackService::class);
 
         $articleFeedbackService->saveFeedback(
             [
-                'user_id' => 2,
-                'article_id' => '11f96d5d7ada37bb9419de81d943ad7f',
-                'liked' => null,
+                'user_id' => $this->faker->numberBetween(1, 9),
+                'article_id' => null,
+                'liked' => $this->faker->boolean(),
                 'reason' => null
             ]
         );
