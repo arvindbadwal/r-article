@@ -46,34 +46,22 @@ php artisan migrate
 
 ### Custom Route Prefix
 
-You can configure the package route prefix.
-
-In `config/article.php` set/change `route.prefix`
-
-### Custom Route Middleware
-You can configure the package middleware
-
-In `config/article.php` set/change `route.middleware`
-
 ### Custom User Model Namespace
 If User Model has different namespace other than default laravel, change the User Model namespace in following
 
 In `config/article.php` set/change `models.user`
+
+### Unsilo Service
+Set unsilo service setting
+In `config/article.php` set/change `unsilo`
 
 ## Dispatch Event 
 
 Follow Event is dispatch on different event
 
 ```php
-    ArticleFeedbackSaved
     UserArticleActionSaved
     UserReadHistorySaved
-```
-
-## Jobs
-
-```php
-    AddArticleMetaToUserReadHistory
 ```
 
 ## Testing (WIP)
