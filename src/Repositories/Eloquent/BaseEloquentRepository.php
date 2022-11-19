@@ -17,13 +17,6 @@ class BaseEloquentRepository
         $this->model = $model;
     }
 
-    public function updateById($id, $attributes)
-    {
-        return $this->model
-            ->whereId($id)
-            ->update($attributes);
-    }
-
     public function findWhere($cols = [])
     {
         return $this->model

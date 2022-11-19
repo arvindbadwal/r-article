@@ -6,5 +6,4 @@ interface BaseRepositoryInterface
 {
     public function findWhere($cols = []);
     public function findByUserIdAndArticleIn($userId, $articleIds, $version);
-    public function updateById($id, $attributes);
 }

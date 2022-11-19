@@ -7,14 +7,9 @@ return [
     'models' => [
         'user' => App\Models\User::class
     ],
-    'services' => [
-      'unsilo' => App\Services\UnsiloService\UnsiloService::class
-    ],
-
-    'route' => [
-        'prefix' => 'packages/v4',
-        'middleware' => [
-            'auth:api'
-        ],
-    ],
+    'unsilo' => [
+        'old_index' => 'cactus-rdiscovery',
+        'new_index' => 'test-rdiscovery',
+        'service' => App\Services\UnsiloService\UnsiloService::class
+    ]
 ];

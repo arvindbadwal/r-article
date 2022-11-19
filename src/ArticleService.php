@@ -2,10 +2,10 @@
 
 namespace Cactus\Article;
 
-use Cactus\Article\Models\Article;
 use Cactus\Article\Repositories\ArticleFeedbackInterface;
 use Cactus\Article\Repositories\UserReadHistoryInterface;
 use Cactus\Article\Validators\ArticleValidator;
+use Exception;
 use Illuminate\Support\Arr;
 
 /**
@@ -38,22 +38,37 @@ class ArticleService
 
     /**
      * @param $articleId
-     * @param $userId
-     * @return Article[]
-     * @throws \Exception
+     * @param null $userId
+     * @return mixed
+     * @throws Exception
      */
-    public function getArticleMeta($articleId, $userId)
+    public function getArticleMeta($articleId)
     {
-        $content_profile = is_numeric($articleId) ? config('unsilo.old_index') : config('unsilo.new_index');
-        $articleMeta = $this->getMetadataFromUnsilo($articleId, $content_profile);
+        $content_profile = is_numeric($articleId) ? config('article.unsilo.old_index') : config('article.unsilo.new_index');
+        $unsiloService = config('article.services.unsilo') ? app(config('article.services.unsilo')) : null;
 
-        if (empty($articleMeta)) {
-            throw new \Exception("Article meta not found for article Id: {$articleId}");
+        // TODO :: Currently we dont have any package for unsilo, the unsilo service will depend on the application
+        // TODO :: The setting for unsilo service should be defined in article config
+
+        if(!$content_profile || !class_exists($unsiloService)) {
+            throw new Exception('Configuration of Unsilo is missing from article config.');
         }
 
-        $article = new Article($articleMeta);
+        $articleMeta = Arr::first($unsiloService)->getArticleMeta([$articleId], $content_profile);
 
-        if($userId) {
+        if (empty($articleMeta)) {
+            throw new Exception("Article meta not found for article Id: {$articleId}");
+        }
+
+        return $articleMeta;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getArticleMetaForUser($articleId, $userId) {
+            $articleMeta = $this->getArticleMeta($articleId);
+
             if(is_numeric($articleId)) {
                 $condition = ['article_id' => $articleId, 'user_id' => $userId];
             } else {
@@ -63,28 +78,9 @@ class ArticleService
             $articleFeedback = app(ArticleFeedbackInterface::class)->findWhere($condition);
             $userReadHistory = app(UserReadHistoryInterface::class)->findWhere($condition);
 
-            $article->liked =  optional($articleFeedback)->liked;
-            $article->reason = optional($articleFeedback)->reason;
-            $article->is_read = (bool) $userReadHistory;
-        }
-
-        return [$article];
+            $articleMeta->liked =  optional($articleFeedback)->liked;
+            $articleMeta->reason = optional($articleFeedback)->reason;
+            $articleMeta->is_read = (bool) $userReadHistory;
     }
-
-    /**
-     * @param        $articleId
-     * @param string $content_profile
-     * @return mixed
-     */
-    public function getMetadataFromUnsilo($articleId, string $content_profile = 'test-rdiscovery')
-    {
-        if(config('article.services.unsilo')) {
-            return Arr::first(app(config('article.services.unsilo'))->getArticleMeta([$articleId], $content_profile));
-
-        }
-
-        return null;
-    }
-
-
 }
+

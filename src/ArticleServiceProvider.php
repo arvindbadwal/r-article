@@ -5,9 +5,6 @@ namespace Cactus\Article;
 use Cactus\Article\Models\ArticleFeedback;
 use Cactus\Article\Models\UserArticleAction;
 use Cactus\Article\Models\UserReadHistory;
-use Cactus\Article\Observers\ArticleFeedbackObserver;
-use Cactus\Article\Observers\UserArticleActionObserver;
-use Cactus\Article\Observers\UserReadHistoryObserver;
 use Cactus\Article\Repositories\ArticleFeedbackInterface;
 use Cactus\Article\Repositories\Eloquent\ArticleFeedbackRepository;
 use Cactus\Article\Repositories\Eloquent\UserArticleActionRepository;
@@ -16,12 +13,13 @@ use Cactus\Article\Repositories\UserArticleActionInterface;
 use Cactus\Article\Repositories\UserReadHistoryInterface;
 use Cactus\Article\Validators\ArticleFeedbackValidator;
 use Cactus\Article\Validators\ArticleHistoryValidator;
+use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 use Cactus\Article\Validators\ArticleValidator;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 
-class ArticleServiceProvider extends ServiceProvider
+class ArticleServiceProvider extends ServiceProvider implements DeferrableProvider
 {
     /**
      * Bootstrap the application services.
@@ -32,9 +30,6 @@ class ArticleServiceProvider extends ServiceProvider
          * Optional methods to load your package assets
          */
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->loadRoutesFrom(__DIR__.'/routes/api.php');
-
-        $this->bootObservers();
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -68,11 +63,11 @@ class ArticleServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton('article-history', function () {
-            return new ArticleService(new ArticleHistoryValidator());
+            return new ArticleHistoryService(new ArticleHistoryValidator());
         });
 
         $this->app->singleton('article-feedback', function () {
-            return new ArticleService(new ArticleFeedbackValidator());
+            return new ArticleFeedbackService(new ArticleFeedbackValidator());
         });
     }
 
@@ -87,13 +82,6 @@ class ArticleServiceProvider extends ServiceProvider
         $this->app->bind(UserArticleActionInterface::class, function() {
             return new UserArticleActionRepository(new UserArticleAction());
         });
-    }
-
-    private function bootObservers()
-    {
-        UserReadHistory::observe(UserReadHistoryObserver::class);
-        ArticleFeedback::observe(ArticleFeedbackObserver::class);
-        UserArticleAction::observe(UserArticleActionObserver::class);
     }
 
     /**
@@ -114,5 +102,4 @@ class ArticleServiceProvider extends ServiceProvider
             ->push($this->app->databasePath()."/migrations/{$timestamp}_{$migrationFileName}")
             ->first();
     }
-
 }
