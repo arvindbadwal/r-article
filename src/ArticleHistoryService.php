@@ -44,11 +44,7 @@ class ArticleHistoryService
     {
         $validated = $this->validator->validate($params, ArticleHistoryValidator::ARTICLE_MARK_READ);
 
-        $articleRead = $this->userReadHistoryRepository->updateOrCreateRead($validated, $this->version);
-
-        event(new UserReadHistorySaved($articleRead));
-
-        return $articleRead;
+        return $this->userReadHistoryRepository->updateOrCreateRead($validated, $this->version);
     }
 
     /**

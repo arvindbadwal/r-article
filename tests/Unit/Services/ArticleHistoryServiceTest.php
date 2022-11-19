@@ -4,12 +4,17 @@ namespace Cactus\Article\Tests\Unit\Services;
 
 use Cactus\Article\ArticleHistoryService;
 use Cactus\Article\ArticleServiceProvider;
+use Cactus\Article\Models\UserReadHistory;
 use Cactus\Article\Repositories\Eloquent\UserReadHistoryRepository;
 use Cactus\Article\Repositories\UserReadHistoryInterface;
+use Illuminate\Validation\ValidationException;
 use Orchestra\Testbench\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
 
 class ArticleHistoryServiceTest extends TestCase
 {
+    use WithFaker;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -46,23 +51,47 @@ class ArticleHistoryServiceTest extends TestCase
 
     /**
      * @test
+     * @throws ValidationException
      */
     public function it_performs_mark_article_read()
     {
         $userReadHistoryRepo = $this->mock(UserReadHistoryRepository::class);
-        $userReadHistoryRepo->shouldReceive('updateOrCreateRead')->andReturn(true);
+        $userReadHistoryRepo->shouldReceive('updateOrCreateRead')->andReturn(new UserReadHistory);
         $this->app->instance(UserReadHistoryInterface::class, $userReadHistoryRepo);
 
         $articleHistoryService = resolve(ArticleHistoryService::class);
 
-        $result = $articleHistoryService->markArticleRead(
+        $result = $articleHistoryService->saveArticleRead(
             [
-                'user_id' => 2,
-                'article_id' => '11f96d5d7ada37bb9419de81d943ad7f',
+                'user_id' => $this->faker->numberBetween(1, 9),
+                'article_id' => $this->faker->md5(),
                 'read_via' => null
             ]
         );
 
-        $this->assertTrue($result);
+        $this->assertInstanceOf(UserReadHistory::class, $result);
+    }
+
+    /**
+     * @test
+     * @throws ValidationException
+     */
+    public function it_performs_mark_article_throws_validation_exception()
+    {
+        $userReadHistoryRepo = $this->mock(UserReadHistoryRepository::class);
+        $userReadHistoryRepo->shouldReceive('updateOrCreateRead')->andReturn(new UserReadHistory);
+        $this->app->instance(UserReadHistoryInterface::class, $userReadHistoryRepo);
+
+        $articleHistoryService = resolve(ArticleHistoryService::class);
+
+        $this->expectException(ValidationException::class);
+
+        $articleHistoryService->saveArticleRead(
+            [
+                'user_id' => $this->faker->numberBetween(1, 9),
+                'article_id' => null,
+                'read_via' => null
+            ]
+        );
     }
 }

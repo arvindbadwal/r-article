@@ -3,6 +3,7 @@
 namespace Cactus\Article\Tests\Unit;
 
 use Cactus\Article\ArticleServiceProvider;
+use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Contracts\Foundation\Application;
 use Orchestra\Testbench\TestCase;
 use Illuminate\Support\ServiceProvider;
@@ -10,6 +11,11 @@ use Mockery;
 
 class ArticleServiceProviderTest extends TestCase
 {
+    /**
+     * @var Mockery\Mock
+     */
+    protected $config_mock;
+
     /**
      * @var Mockery\Mock
      */
@@ -29,7 +35,7 @@ class ArticleServiceProviderTest extends TestCase
         parent::setUp();
     }
 
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [ArticleServiceProvider::class];
     }
@@ -41,7 +47,8 @@ class ArticleServiceProviderTest extends TestCase
 
     protected function setUpMocks()
     {
-        $this->application_mock = Mockery::mock(Application::class);
+        $this->config_mock = Mockery::mock(Config::class);
+        $this->application_mock = Mockery::mock(Application::class, ['make' => $this->config_mock]);
     }
 
     /**
@@ -58,7 +65,7 @@ class ArticleServiceProviderTest extends TestCase
     public function it_performs_the_register_method()
     {
         // TODO:: need to perform register method test case
-        // $this->assertNull($this->service_provider->register());
+
         $this->assertNull(null);
     }
 

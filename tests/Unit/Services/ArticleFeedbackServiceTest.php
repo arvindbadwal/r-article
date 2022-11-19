@@ -4,18 +4,16 @@ namespace Cactus\Article\Tests\Unit\Services;
 
 use Cactus\Article\ArticleFeedbackService;
 use Cactus\Article\ArticleServiceProvider;
+use Cactus\Article\Models\ArticleFeedback;
 use Cactus\Article\Repositories\ArticleFeedbackInterface;
 use Cactus\Article\Repositories\Eloquent\ArticleFeedbackRepository;
-use Cactus\Article\Repositories\Eloquent\UserArticleActionRepository;
-use Cactus\Article\Repositories\UserArticleActionInterface;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Validation\ValidationException;
 use Orchestra\Testbench\TestCase;
 
-class ArticleFeedbackServiceTest111 extends TestCase
+class ArticleFeedbackServiceTest extends TestCase
 {
-    use WithFaker, RefreshDatabase;
+    use WithFaker;
 
     protected function setUp(): void
     {
@@ -53,21 +51,17 @@ class ArticleFeedbackServiceTest111 extends TestCase
 
     /**
      * @test
+     * @throws ValidationException
      */
     public function it_performs_save_feedback_success()
     {
         $articleFeedbackRepo = $this->mock(ArticleFeedbackRepository::class);
-        $articleFeedbackRepo->shouldReceive('updateOrCreateFeedback')->andReturn(true);
+        $articleFeedbackRepo->shouldReceive('updateOrCreateFeedback')->andReturn(new ArticleFeedback());
         $this->app->instance(ArticleFeedbackInterface::class, $articleFeedbackRepo);
-
-        $userReadHistoryRepo = $this->mock(UserArticleActionRepository::class);
-        $userReadHistoryRepo->shouldReceive('updateOrCreateAction')->andReturn(true);
-        $this->app->instance(UserArticleActionInterface::class, $userReadHistoryRepo);
-
 
         $articleFeedbackService = resolve(ArticleFeedbackService::class);
 
-        $result = $articleFeedbackService->saveFeedback(
+        $result = $articleFeedbackService->saveArticleFeedback(
             [
                 'user_id' => $this->faker->numberBetween(1, 9),
                 'article_id' =>  $this->faker->md5(),
@@ -76,23 +70,21 @@ class ArticleFeedbackServiceTest111 extends TestCase
             ]
         );
 
-        $this->assertTrue($result);
+        $this->assertInstanceOf(ArticleFeedback::class, $result);
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function it_performs_save_feedback_throws_validation_exception()
     {
         $articleFeedbackRepo = $this->mock(ArticleFeedbackRepository::class);
         $articleFeedbackRepo->shouldReceive('updateOrCreateFeedback')->andReturn(true);
         $this->app->instance(ArticleFeedbackInterface::class, $articleFeedbackRepo);
 
-        $userReadHistoryRepo = $this->mock(UserArticleActionRepository::class);
-        $userReadHistoryRepo->shouldReceive('updateOrCreateAction')->andReturn(true);
-        $this->app->instance(UserArticleActionInterface::class, $userReadHistoryRepo);
-
-
         $articleFeedbackService = resolve(ArticleFeedbackService::class);
 
-        $articleFeedbackService->saveFeedback(
+        $articleFeedbackService->saveArticleFeedback(
             [
                 'user_id' => $this->faker->numberBetween(1, 9),
                 'article_id' => null,

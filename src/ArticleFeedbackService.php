@@ -4,7 +4,6 @@ namespace Cactus\Article;
 
 use Cactus\Article\Events\UserArticleActionSaved;
 use Cactus\Article\Repositories\ArticleFeedbackInterface;
-use Cactus\Article\Repositories\UserArticleActionInterface;
 use Cactus\Article\Validators\ArticleFeedbackValidator;
 use DB;
 use Illuminate\Validation\ValidationException;
@@ -15,8 +14,6 @@ class ArticleFeedbackService
 
     private $articleFeedbackRepository;
 
-    private $userArticleAction;
-
     /**
      * @var string
      */
@@ -26,7 +23,6 @@ class ArticleFeedbackService
     {
         $this->validator = $validator;
         $this->articleFeedbackRepository = app(ArticleFeedbackInterface::class);
-        $this->userArticleAction = app(UserArticleActionInterface::class);
     }
 
     /**
@@ -49,16 +45,7 @@ class ArticleFeedbackService
     {
         $validated = $this->validator->validate($params, ArticleFeedbackValidator::ARTICLE_CREATE_FEEDBACK);
 
-        DB::transaction(function () use($validated) {
-            $this->articleFeedbackRepository->updateOrCreateFeedback($validated, $this->version);
-            
-            $validated['action_performed'] = 'liked';
-            $articleAction = $this->userArticleAction->updateOrCreateAction($validated, $this->version);
-
-            event(new UserArticleActionSaved($articleAction));
-        });
-
-        return true;
+        return $this->articleFeedbackRepository->updateOrCreateFeedback($validated, $this->version);
     }
 
     /**
