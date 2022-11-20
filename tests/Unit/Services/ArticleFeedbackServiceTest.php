@@ -9,11 +9,13 @@ use Cactus\Article\Repositories\ArticleFeedbackInterface;
 use Cactus\Article\Repositories\Eloquent\ArticleFeedbackRepository;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Validation\ValidationException;
-use Orchestra\Testbench\TestCase;
+//use Orchestra\Testbench\TestCase;
+use Cactus\Article\Tests\TestCase;
 
 class ArticleFeedbackServiceTest extends TestCase
 {
     use WithFaker;
+
 
     protected function setUp(): void
     {
@@ -30,6 +32,7 @@ class ArticleFeedbackServiceTest extends TestCase
      */
     public function it_performs_set_version_new()
     {
+        $this->app->instance(ArticleFeedbackInterface::class, ArticleFeedbackRepository::class);
         $articleService = resolve(ArticleFeedbackService::class);
 
         $result = $articleService->setVersion('new');
@@ -42,6 +45,7 @@ class ArticleFeedbackServiceTest extends TestCase
      */
     public function it_performs_set_version_old()
     {
+        $this->app->instance(ArticleFeedbackInterface::class, ArticleFeedbackRepository::class);
         $articleService = resolve(ArticleFeedbackService::class);
 
         $result = $articleService->setVersion('old');

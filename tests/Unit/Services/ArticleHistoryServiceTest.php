@@ -8,12 +8,15 @@ use Cactus\Article\Models\UserReadHistory;
 use Cactus\Article\Repositories\Eloquent\UserReadHistoryRepository;
 use Cactus\Article\Repositories\UserReadHistoryInterface;
 use Illuminate\Validation\ValidationException;
-use Orchestra\Testbench\TestCase;
+// use Orchestra\Testbench\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Cactus\Article\Tests\TestCase;
 
 class ArticleHistoryServiceTest extends TestCase
 {
     use WithFaker;
+
+    protected $articleHistoryService;
 
     protected function setUp(): void
     {
@@ -30,6 +33,7 @@ class ArticleHistoryServiceTest extends TestCase
      */
     public function it_performs_set_version_new()
     {
+        $this->app->instance(UserReadHistoryInterface::class, UserReadHistoryRepository::class);
         $articleService = resolve(ArticleHistoryService::class);
 
         $result = $articleService->setVersion('new');
@@ -42,6 +46,7 @@ class ArticleHistoryServiceTest extends TestCase
      */
     public function it_performs_set_version_old()
     {
+        $this->app->instance(UserReadHistoryInterface::class, UserReadHistoryRepository::class);
         $articleService = resolve(ArticleHistoryService::class);
 
         $result = $articleService->setVersion('old');
