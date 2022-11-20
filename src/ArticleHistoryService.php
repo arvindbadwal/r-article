@@ -6,6 +6,7 @@ use Cactus\Article\Events\UserReadHistorySaved;
 use Cactus\Article\Repositories\UserReadHistoryInterface;
 use Cactus\Article\Validators\ArticleHistoryValidator;
 use Illuminate\Validation\ValidationException;
+use Exception;
 
 class ArticleHistoryService
 {
@@ -52,7 +53,7 @@ class ArticleHistoryService
      * @param array $articleIds
      * @return array
      */
-    public function isArticleRead(int $userId, array $articleIds)
+    public function isArticleRead(int $userId, array $articleIds): array
     {
         $userReadHistories = $this->userReadHistoryRepository->findByUserIdAndArticleIn($userId, $articleIds, $this->version);
 
@@ -65,5 +66,20 @@ class ArticleHistoryService
         }
 
         return $userReadHistories->pluck('article_id')->toArray();
+    }
+
+    /**
+     * @param $readId
+     * @param $articleMeta
+     * @return mixed
+     * @throws Exception
+     */
+    public function updateArticleMeta($readId, $articleMeta)
+    {
+        try {
+            return $this->userReadHistoryRepository->updateArticleMetaById($readId, $articleMeta);
+        } catch (Exception $exception) {
+            throw new Exception($exception->getMessage());
+        }
     }
 }

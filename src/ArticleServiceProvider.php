@@ -3,13 +3,10 @@
 namespace Cactus\Article;
 
 use Cactus\Article\Models\ArticleFeedback;
-use Cactus\Article\Models\UserArticleAction;
 use Cactus\Article\Models\UserReadHistory;
 use Cactus\Article\Repositories\ArticleFeedbackInterface;
 use Cactus\Article\Repositories\Eloquent\ArticleFeedbackRepository;
-use Cactus\Article\Repositories\Eloquent\UserArticleActionRepository;
 use Cactus\Article\Repositories\Eloquent\UserReadHistoryRepository;
-use Cactus\Article\Repositories\UserArticleActionInterface;
 use Cactus\Article\Repositories\UserReadHistoryInterface;
 use Cactus\Article\Validators\ArticleFeedbackValidator;
 use Cactus\Article\Validators\ArticleHistoryValidator;
@@ -77,9 +74,6 @@ class ArticleServiceProvider extends ServiceProvider implements DeferrableProvid
         });
         $this->app->bind(ArticleFeedbackInterface::class, function() {
             return new ArticleFeedbackRepository(new ArticleFeedback());
-        });
-        $this->app->bind(UserArticleActionInterface::class, function() {
-            return new UserArticleActionRepository(new UserArticleAction());
         });
     }
 

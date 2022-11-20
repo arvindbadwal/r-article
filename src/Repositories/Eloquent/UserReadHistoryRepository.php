@@ -37,4 +37,14 @@ class UserReadHistoryRepository extends BaseEloquentRepository implements UserRe
                 'read_via' => $params['read_via']
             ]);
     }
+
+    public function updateArticleMetaById($id, $articleMeta)
+    {
+        return $this->model
+            ->whereId($id)
+            ->update([
+                'article_meta' => $articleMeta,
+                'is_active' => true
+            ]);
+    }
 }
