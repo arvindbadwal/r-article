@@ -66,7 +66,8 @@ class ArticleService
     /**
      * @throws Exception
      */
-    public function getArticleMetaForUser($articleId, $userId) {
+    public function getArticleMetaForUser($articleId, $userId)
+    {
             $articleMeta = $this->getArticleMeta($articleId);
 
             if(is_numeric($articleId)) {
@@ -78,9 +79,11 @@ class ArticleService
             $articleFeedback = app(ArticleFeedbackInterface::class)->findWhere($condition);
             $userReadHistory = app(UserReadHistoryInterface::class)->findWhere($condition);
 
-            $articleMeta->liked =  optional($articleFeedback)->liked;
-            $articleMeta->reason = optional($articleFeedback)->reason;
-            $articleMeta->is_read = (bool) $userReadHistory;
+            $articleMeta['liked'] =  optional($articleFeedback)->liked;
+            $articleMeta['reason'] = optional($articleFeedback)->reason;
+            $articleMeta['is_read'] = (bool) $userReadHistory;
+
+            return $articleMeta;
     }
 }
 
