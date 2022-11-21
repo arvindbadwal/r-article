@@ -2,7 +2,6 @@
 
 namespace Cactus\Article;
 
-use Cactus\Article\Events\UserArticleActionSaved;
 use Cactus\Article\Repositories\ArticleFeedbackInterface;
 use Cactus\Article\Validators\ArticleFeedbackValidator;
 use DB;

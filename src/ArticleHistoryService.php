@@ -2,7 +2,6 @@
 
 namespace Cactus\Article;
 
-use Cactus\Article\Events\UserReadHistorySaved;
 use Cactus\Article\Repositories\UserReadHistoryInterface;
 use Cactus\Article\Validators\ArticleHistoryValidator;
 use Illuminate\Validation\ValidationException;

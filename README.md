@@ -55,16 +55,7 @@ In `config/article.php` set/change `models.user`
 Set unsilo service setting
 In `config/article.php` set/change `unsilo`
 
-## Dispatch Event 
-
-Follow Event is dispatch on different event
-
-```php
-    UserArticleActionSaved
-    UserReadHistorySaved
-```
-
-## Testing (WIP)
+## Testing
 
 ```bash
 composer test
